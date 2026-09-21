@@ -87,7 +87,7 @@ export default class LocalImagesPlugin extends Plugin {
 
     if (!this.settings.disAddCom) {
 
-      this.addRibbonIcon("dice", APP_TITLE + "\r\nLocalize attachments (plugin folder)", () => {
+      this.addRibbonIcon("dice", "Local Images Plus", () => {
         this.processActivePage(false)()
       });
 
