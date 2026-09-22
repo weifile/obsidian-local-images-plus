@@ -17,6 +17,7 @@ import {
 } from "./config"
 
 import LocalImagesPlugin from "./main"
+import { t } from "./lang"
 import safeRegex from "safe-regex"
 
 
@@ -58,11 +59,11 @@ export default class SettingTab extends PluginSettingTab {
         const donheader = containerEl.createEl("div")
         // donheader.createEl("a", { text: "Support the project! ", href: "https://www.buymeacoffee.com/sergeikorneev", cls: "donheader_txt" })
 
-        containerEl.createEl("h3", { text: "Interface settings" })
+        containerEl.createEl("h3", { text: t("H_INTERFACE") })
 
         new Setting(containerEl)
-            .setName("Show notifications")
-            .setDesc("Show notifications when pages were processed.")
+            .setName(t("S_SHOW_NOTIF"))
+            .setDesc(t("S_SHOW_NOTIF_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.showNotifications)
@@ -73,8 +74,8 @@ export default class SettingTab extends PluginSettingTab {
             )
 
         new Setting(containerEl)
-            .setName("Disable additional commands")
-            .setDesc("Do not show additional commands in command palette. Reload the plugin in settings to take effect (turn off/on).")
+            .setName(t("S_DIS_ADD_COM"))
+            .setDesc(t("S_DIS_ADD_COM_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.disAddCom)
@@ -84,13 +85,13 @@ export default class SettingTab extends PluginSettingTab {
                     })
             )
 
-        containerEl.createEl("h3", { text: "Processing settings" })
+        containerEl.createEl("h3", { text: t("H_PROCESSING") })
 
 
 
         new Setting(containerEl)
-            .setName("Automatic processing")
-            .setDesc("Process notes on create/copy/paste.")
+            .setName(t("S_AUTO"))
+            .setDesc(t("S_AUTO_D"))
 
             .addToggle((toggle) =>
                 toggle
@@ -103,8 +104,8 @@ export default class SettingTab extends PluginSettingTab {
             )
 
         new Setting(containerEl)
-            .setName("Automatic processing interval")
-            .setDesc("Interval in seconds for processing update. It takes some time to reveal changed content of a note to plugins.")
+            .setName(t("S_AUTO_INTERVAL"))
+            .setDesc(t("S_AUTO_INTERVAL_D"))
             .addText((text) =>
                 text
                     .setValue(String(this.plugin.settings.realTimeUpdateInterval))
@@ -121,7 +122,7 @@ export default class SettingTab extends PluginSettingTab {
 
                             displayError(
 
-                                "The value should be a positive integer number between 5 and 3600!"
+                                t("E_INTERVAL_RANGE")
                             )
                             return
                         }
@@ -138,8 +139,8 @@ export default class SettingTab extends PluginSettingTab {
 
 
         new Setting(containerEl)
-            .setName("Number of retries for every single attachment")
-            .setDesc("If an error occurs during downloading (network etc.) try to re-download several times.")
+            .setName(t("S_RETRIES"))
+            .setDesc(t("S_RETRIES_D"))
             .addText((text) =>
                 text
                     .setValue(String(this.plugin.settings.tryCount))
@@ -153,7 +154,7 @@ export default class SettingTab extends PluginSettingTab {
                             numberValue > 6
                         ) {
                             displayError(
-                                "The value should be a positive integer number between 1 and 6!"
+                                t("E_RETRIES_RANGE")
                             )
                             return
                         }
@@ -163,8 +164,8 @@ export default class SettingTab extends PluginSettingTab {
             )
 
         new Setting(containerEl)
-            .setName("Process all new markdown files")
-            .setDesc("Process all new created/cloud-synced files with corresponding extensions.")
+            .setName(t("S_PROCESS_CREATED"))
+            .setDesc(t("S_PROCESS_CREATED_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.processCreated)
@@ -176,8 +177,8 @@ export default class SettingTab extends PluginSettingTab {
 
 
         new Setting(containerEl)
-            .setName("Process all new attachments")
-            .setDesc("The plugin will also move all attachments from obsidian default folder to plugin folder.")
+            .setName(t("S_PROCESS_ALL"))
+            .setDesc(t("S_PROCESS_ALL_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.processAll)
@@ -188,8 +189,8 @@ export default class SettingTab extends PluginSettingTab {
             )
 
         new Setting(containerEl)
-            .setName("Use MD5 for new attachments (Pasted images and files)")
-            .setDesc("The plugin will use MD5 when renaming all new attachments.")
+            .setName(t("S_MD5"))
+            .setDesc(t("S_MD5_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.useMD5ForNewAtt)
@@ -200,8 +201,8 @@ export default class SettingTab extends PluginSettingTab {
             )
 
         new Setting(containerEl)
-            .setName("Download unknown filetypes")
-            .setDesc("Download unknown filetypes and save them with .unknown extension.")
+            .setName(t("S_DOWN_UNKNOWN"))
+            .setDesc(t("S_DOWN_UNKNOWN_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.downUnknown)
@@ -211,8 +212,8 @@ export default class SettingTab extends PluginSettingTab {
                     })
             )
         new Setting(containerEl)
-            .setName("Compress images (Web Images)")
-            .setDesc("Compress all downloaded images. May reduce file size by several times, but can also affect performance.")
+            .setName(t("S_COMPRESS_WEB"))
+            .setDesc(t("S_COMPRESS_WEB_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.PngToJpeg)
@@ -223,8 +224,8 @@ export default class SettingTab extends PluginSettingTab {
             )
 
         new Setting(containerEl)
-            .setName("Compress images (Pasted Images)")
-            .setDesc("Compress all pasted images. May reduce file size by several times, but can also affect performance.")
+            .setName(t("S_COMPRESS_PASTED"))
+            .setDesc(t("S_COMPRESS_PASTED_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.PngToJpegLocal)
@@ -237,8 +238,8 @@ export default class SettingTab extends PluginSettingTab {
 
 
         new Setting(containerEl)
-            .setName("Compression type")
-            .setDesc("Select image compression type. Keep in mind that webp format has image size limitations.")
+            .setName(t("S_COMPRESS_TYPE"))
+            .setDesc(t("S_COMPRESS_TYPE_D"))
             .addDropdown(dropdown => {
                 dropdown
                     .addOption("image/webp", "WebP")
@@ -251,11 +252,11 @@ export default class SettingTab extends PluginSettingTab {
             });
 
         new Setting(containerEl)
-            .setName("Excluded folders")
-            .setDesc("Excluded folders. New files in these folders will not be processed automatically.")
+            .setName(t("S_EXCLUDED_FOLDERS"))
+            .setDesc(t("S_EXCLUDED_FOLDERS_D"))
             .addTextArea(text => {
                 text
-                    .setPlaceholder("Enter the full path in new lines, e.g. RootFolder/Subfolder.")
+                    .setPlaceholder(t("S_EXCLUDED_FOLDERS_P"))
                     .setValue(this.plugin.settings.ExcludedFoldersList)
                     .onChange(async (value) => {
 
@@ -276,8 +277,8 @@ export default class SettingTab extends PluginSettingTab {
             });
 
         new Setting(containerEl)
-            .setName("Image Quality")
-            .setDesc("Image quality selection (30 to 100).")
+            .setName(t("S_QUALITY"))
+            .setDesc(t("S_QUALITY_D"))
             .addText((text) =>
                 text
                     .setValue(String(this.plugin.settings.JpegQuality))
@@ -291,7 +292,7 @@ export default class SettingTab extends PluginSettingTab {
                             numberValue > 100
                         ) {
                             displayError(
-                                "The value should be a positive integer number between 10 and 100!"
+                                t("E_QUALITY_RANGE")
                             )
                             return
                         }
@@ -302,8 +303,8 @@ export default class SettingTab extends PluginSettingTab {
 
 
         new Setting(containerEl)
-            .setName("File size lower limit in Kb")
-            .setDesc("Do not download files with size less than this value. Set 0 for no limit.")
+            .setName(t("S_SIZE_LIMIT"))
+            .setDesc(t("S_SIZE_LIMIT_D"))
             .addText((text) =>
                 text
                     .setValue(String(this.plugin.settings.filesizeLimit))
@@ -319,7 +320,7 @@ export default class SettingTab extends PluginSettingTab {
 
                             displayError(
 
-                                "The value should be a positive integer!"
+                                t("E_POSITIVE_INT")
                             )
                             return
                         }
@@ -333,8 +334,8 @@ export default class SettingTab extends PluginSettingTab {
             )
 
         new Setting(containerEl)
-            .setName("Exclusions")
-            .setDesc("The plugin will not download attachments with these extensions.")
+            .setName(t("S_EXCLUSIONS"))
+            .setDesc(t("S_EXCLUSIONS_D"))
             .addText((text) =>
                 text
                     .setValue(this.plugin.settings.ignoredExt)
@@ -346,8 +347,8 @@ export default class SettingTab extends PluginSettingTab {
 
 
         new Setting(containerEl)
-            .setName("Do not create Obsidian attachment folder (For compatibility with other plugins)")
-            .setDesc("The plugin will not create an Obsidian attachments folder. This may cause the plugin to behave incorrectly. ")
+            .setName(t("S_NO_OBS_FOLDER"))
+            .setDesc(t("S_NO_OBS_FOLDER_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.DoNotCreateObsFolder)
@@ -358,11 +359,11 @@ export default class SettingTab extends PluginSettingTab {
             )
 
 
-        containerEl.createEl("h3", { text: "Note settings" })
+        containerEl.createEl("h3", { text: t("H_NOTE") })
 
         new Setting(containerEl)
-            .setName("Preserve link captions")
-            .setDesc("Add media links captions to converted tags.")
+            .setName(t("S_CAPTIONS"))
+            .setDesc(t("S_CAPTIONS_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.useCaptions)
@@ -374,8 +375,8 @@ export default class SettingTab extends PluginSettingTab {
 
 
         new Setting(containerEl)
-            .setName("Add original filename or 'Open file' tag")
-            .setDesc("Add [[original filename]] or [original filename](link to attachment) after replaced tag (only for file:// protocol or dropped/pasted files ).")
+            .setName(t("S_ADD_NAME"))
+            .setDesc(t("S_ADD_NAME_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.addNameOfFile)
@@ -389,9 +390,9 @@ export default class SettingTab extends PluginSettingTab {
 
 
         new Setting(containerEl)
-            .setName("Include pattern")
+            .setName(t("S_INCLUDE"))
             .setDesc(
-                "Include only files with extensions only matching this pattern. Example: md|canvas"
+                t("S_INCLUDE_D")
             )
             .addText((text) =>
                 text.setValue(this.plugin.settings.includeps).onChange(async (value) => {
@@ -404,7 +405,7 @@ export default class SettingTab extends PluginSettingTab {
 
                         if (!safeRegex(value)) {
                             displayError(
-                                "Unsafe regex! https://www.npmjs.com/package/safe-regex"
+                                t("E_UNSAFE_REGEX")
                             )
                             return
                         }
@@ -415,11 +416,11 @@ export default class SettingTab extends PluginSettingTab {
                 })
             )
 
-        containerEl.createEl("h3", { text: "Orphaned attachments" })
+        containerEl.createEl("h3", { text: t("H_ORPHANS") })
 
         new Setting(containerEl)
-            .setName("Remove files completely")
-            .setDesc("Do not move orphaned files into the garbage can.")
+            .setName(t("S_REMOVE_COMPLETELY"))
+            .setDesc(t("S_REMOVE_COMPLETELY_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.removeOrphansCompl)
@@ -429,16 +430,16 @@ export default class SettingTab extends PluginSettingTab {
                     })
             )
 
-        containerEl.createEl("h3", { text: "Media folder settings" })
+        containerEl.createEl("h3", { text: t("H_MEDIA_FOLDER") })
 
         new Setting(containerEl)
-            .setName("How to write paths in tags")
-            .setDesc("Select whether to write full paths in tags or not.")
+            .setName(t("S_PATH_IN_TAGS"))
+            .setDesc(t("S_PATH_IN_TAGS_D"))
             .addDropdown((text) =>
                 text
-                    .addOption("fullDirPath", "Full path")
-                    .addOption("onlyRelative", "Relative to note")
-                    .addOption("baseFileName", "Only filename")
+                    .addOption("fullDirPath", t("O_FULL_PATH"))
+                    .addOption("onlyRelative", t("O_RELATIVE"))
+                    .addOption("baseFileName", t("O_FILENAME"))
                     .setValue(this.plugin.settings.pathInTags)
                     .onChange(async (value) => {
                         this.plugin.settings.pathInTags = value
@@ -449,18 +450,13 @@ export default class SettingTab extends PluginSettingTab {
 
 
         new Setting(containerEl)
-            .setName("Date format")
-            .setDesc(
-                "Date format for ${date} variable. E.g. \
-                 | MMMM Do YYYY, h:mm:ss a (March 20th 2024, 10:54:46 am) \
-                 | dddd  (Wednesday)\
-                 | MMM Do YY  (Mar 20th 24)"
-            )
+            .setName(t("S_DATE_FORMAT"))
+            .setDesc(t("S_DATE_FORMAT_D"))
             .addText((text) =>
                 text.setValue(this.plugin.settings.DateFormat).onChange(async (value) => {
                     if (value.match(/(\)|\(|\"|\'|\#|\]|\[|\:|\>|\<|\*|\|)/g) !== null) {
                         displayError(
-                            "Unsafe folder name! Some chars are forbidden in some filesystems."
+                            t("E_UNSAFE_FOLDER")
                         )
                         return
                     }
@@ -472,13 +468,13 @@ export default class SettingTab extends PluginSettingTab {
 
 
         new Setting(containerEl)
-            .setName("Folder to save new attachments")
-            .setDesc("Select where all new attachments will be saved.\nYou can use templates e.g. _resouces/${date}/${notename}")
+            .setName(t("S_SAVE_WHERE"))
+            .setDesc(t("S_SAVE_WHERE_D"))
             .addDropdown((text) =>
                 text
-                    .addOption("obsFolder", "Copy Obsidian settings")
-                    .addOption("inFolderBelow", "In the root folder specified below")
-                    .addOption("nextToNoteS", "Next to note in the folder specified below")
+                    .addOption("obsFolder", t("O_OBS_SETTINGS"))
+                    .addOption("inFolderBelow", t("O_ROOT_BELOW"))
+                    .addOption("nextToNoteS", t("O_NEXT_TO_NOTE"))
                     .setValue(this.plugin.settings.saveAttE)
 
                     .onChange(async (value) => {
@@ -490,11 +486,8 @@ export default class SettingTab extends PluginSettingTab {
             )
 
         new Setting(containerEl)
-            .setName("Move/delete/rename media folder")
-            .setDesc("Rename or move this folder to the obsidian or system garbage can when the associated note is deleted/renamed/moved. \
-                  This setting takes effect only if the path contains ${notename} template at the end\
-                  and the options 'Next to note in the folder specified below' / 'Relative to note' are selected.\
-                  Use this setting at your own risk.")
+            .setName(t("S_MOVE_FOLDER"))
+            .setDesc(t("S_MOVE_FOLDER_D"))
             .setClass("media_folder_set")
             .addToggle((toggle) =>
                 toggle
@@ -507,8 +500,8 @@ export default class SettingTab extends PluginSettingTab {
 
 
         new Setting(containerEl)
-            .setName("Media folder")
-            .setDesc("Folder to keep all downloaded media files.")
+            .setName(t("S_MEDIA_FOLDER"))
+            .setDesc(t("S_MEDIA_FOLDER_D"))
             .setClass("media_folder_set")
             .addText((text) =>
                 text
@@ -517,7 +510,7 @@ export default class SettingTab extends PluginSettingTab {
 
                         if (value.match(/(\)|\(|\"|\'|\#|\]|\[|\:|\>|\<|\*|\|)/g) !== null) {
                             displayError(
-                                "Unsafe folder name! Some chars are forbidden in some filesystems."
+                                t("E_UNSAFE_FOLDER")
                             )
                             return
                         }
@@ -530,10 +523,10 @@ export default class SettingTab extends PluginSettingTab {
             )
 
 
-        containerEl.createEl("h3", { text: "Troubleshooting" })
+        containerEl.createEl("h3", { text: t("H_TROUBLESHOOTING") })
         new Setting(containerEl)
-            .setName("Debug")
-            .setDesc("Enable debug output to console.")
+            .setName(t("S_DEBUG"))
+            .setDesc(t("S_DEBUG_D"))
             .addToggle((toggle) =>
                 toggle
                     .setValue(VERBOSE)

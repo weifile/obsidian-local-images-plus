@@ -1,3 +1,4 @@
+import { t } from "./lang";
 import path, { resolve } from "path";
 import { fromBuffer } from "file-type";
 import isSvg from "is-svg";
@@ -42,7 +43,7 @@ export async function showBalloon(str: string, show: boolean = true, timeout = N
 
 export function displayError(error: Error | string, file?: TFile): void {
   if (file) {
-    showBalloon(`LocalImagesPlus: Error while handling file ${file.name}, ${error.toString()}`);
+    showBalloon(t("N_FILE_ERROR", { name: file.name, err: error.toString() }));
   } else {
     showBalloon(error.toString());
   }

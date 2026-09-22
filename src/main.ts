@@ -9,6 +9,7 @@ import {
 } from "obsidian"
 
 import SettingTab from "./settingstab"
+import { t } from "./lang"
 
 import {
   imageTagProcessor,
@@ -74,56 +75,56 @@ export default class LocalImagesPlugin extends Plugin {
 
     this.addCommand({
       id: "download-images",
-      name: "Localize attachments for the current note (plugin folder)",
+      name: t("CMD_LOCALIZE_CURRENT_PLUGIN"),
       callback: this.processActivePage(false),
     })
 
 
     this.addCommand({
       id: "download-images-def",
-      name: "Localize attachments for the current note (Obsidian folder)",
+      name: t("CMD_LOCALIZE_CURRENT_OBS"),
       callback: this.processActivePage(true),
     })
 
     if (!this.settings.disAddCom) {
 
-      this.addRibbonIcon("dice", "Local Images Plus", () => {
+      this.addRibbonIcon("dice", t("RIBBON"), () => {
         this.processActivePage(false)()
       });
 
       this.addCommand({
         id: "set-title-as-name",
-        name: "Set the first found # header as a note name.",
+        name: t("CMD_TITLE_AS_NAME"),
         callback: this.setTitleAsName,
       })
 
       this.addCommand({
         id: "download-images-all",
-        name: "Localize attachments for all your notes (plugin folder)",
+        name: t("CMD_LOCALIZE_ALL_PLUGIN"),
         callback: this.openProcessAllModal,
       })
 
       this.addCommand({
         id: "convert-selection-to-URI",
-        name: "Convert selection to URI",
+        name: t("CMD_SELECTION_TO_URI"),
         callback: this.convertSelToURI,
       })
 
       this.addCommand({
         id: "convert-selection-to-md",
-        name: "Convert selection from html to markdown",
+        name: t("CMD_HTML_TO_MD"),
         callback: this.convertSelToMD,
       })
 
       this.addCommand({
         id: "remove-orphans-from-obsidian-folder",
-        name: "Remove all orphaned attachments (Obsidian folder)",
+        name: t("CMD_ORPHANS_OBS"),
         callback: () => { this.removeOrphans("obsidian")() },
       })
 
       this.addCommand({
         id: "remove-orphans-from-plugin-folder",
-        name: "Remove all orphaned attachments (Plugin folder)",
+        name: t("CMD_ORPHANS_PLUGIN"),
         callback: () => { this.removeOrphans("plugin")() },
       })
     }
@@ -176,7 +177,7 @@ export default class LocalImagesPlugin extends Plugin {
         try {
           if (this.app.vault.getAbstractFileByPath(rootdir) instanceof TFolder) {
             this.app.vault.trash(app.vault.getAbstractFileByPath(rootdir), useSysTrash)
-            showBalloon("Attachment folder " + rootdir + " was moved to trash can.", this.settings.showNotifications)
+            showBalloon(t("N_FOLDER_TRASHED", { dir: rootdir }), this.settings.showNotifications)
           }
         } catch (e) {
           logError(e)
@@ -218,10 +219,10 @@ export default class LocalImagesPlugin extends Plugin {
             await this.ensureFolderExists(path.dirname(newRootDir_))
             //await this.app.fileManager.renameFile(app.vault.getAbstractFileByPath(oldRootdir),newRootDir)
             await this.app.vault.adapter.rename(oldRootdir_, newRootDir_)
-            showBalloon("Attachment folder was renamed to " + newRootDir_, this.settings.showNotifications)
+            showBalloon(t("N_FOLDER_RENAMED", { dir: newRootDir_ }), this.settings.showNotifications)
           }
         } catch (e) {
-          showBalloon("Cannot move attachment folder: \r\n" + e, this.settings.showNotifications)
+          showBalloon(t("N_FOLDER_MOVE_FAIL", { err: String(e) }), this.settings.showNotifications)
           logError(e)
           return
         };
@@ -306,7 +307,7 @@ export default class LocalImagesPlugin extends Plugin {
       const noteFile = app.workspace.activeEditor.file
       return noteFile
     } catch (e) {
-      showBalloon("Cannot get current note! ", this.settings.showNotifications)
+      showBalloon(t("N_NO_CURRENT_NOTE"), this.settings.showNotifications)
 
     }
     return null
@@ -345,7 +346,7 @@ export default class LocalImagesPlugin extends Plugin {
         this.newfCreatedByDownloader.push(element)
       })
 
-      showBalloon(`Attachments for "${file.path}" were processed.`, this.settings.showNotifications)
+      showBalloon(t("N_PROCESSED", { path: file.path }), this.settings.showNotifications)
 
     }
 
@@ -358,11 +359,11 @@ export default class LocalImagesPlugin extends Plugin {
         this.newfCreatedByDownloader.push(element)
       })
 
-      showBalloon(`WARNING!\r\nAttachments for "${file.path}" were processed, but some attachments were not downloaded/replaced...`, this.settings.showNotifications)
+      showBalloon(t("N_PROCESSED_PARTIAL", { path: file.path }), this.settings.showNotifications)
     }
     else {
       if (this.settings.showNotifications) {
-        showBalloon(`Page "${file.path}" has been processed, but nothing was changed.`, this.settings.showNotifications)
+        showBalloon(t("N_PROCESSED_NOCHANGE", { path: file.path }), this.settings.showNotifications)
       }
     }
   }
@@ -375,7 +376,7 @@ export default class LocalImagesPlugin extends Plugin {
       const activeFile = this.getCurrentNote()
       await this.processPage(activeFile, defaultdir)
     } catch (e) {
-      showBalloon(`Please select a note or click inside selected note in canvas.`, this.settings.showNotifications)
+      showBalloon(t("N_SELECT_NOTE"), this.settings.showNotifications)
       return
     }
   }
@@ -388,7 +389,7 @@ export default class LocalImagesPlugin extends Plugin {
     const notice = this.settings.showNotifications
 
       ? new Notice(
-        APP_TITLE + `\nStart processing. Total ${pagesCount} pages. `,
+        APP_TITLE + t("N_START_ALL", { count: pagesCount }),
         TIMEOUT_LIKE_INFINITY
       )
       : null
@@ -398,7 +399,7 @@ export default class LocalImagesPlugin extends Plugin {
         if (notice) {
           //setMessage() is undeclared but factically existing, so ignore the TS error  //@ts-expect-error
           notice.setMessage(
-            APP_TITLE + `\nProcessing \n"${file.path}" \nPage ${index} of ${pagesCount}`
+            APP_TITLE + t("N_PROCESSING_PAGE", { path: file.path, index: index, count: pagesCount })
           )
         }
         await this.processPage(file)
@@ -406,7 +407,7 @@ export default class LocalImagesPlugin extends Plugin {
     }
     if (notice) {
       // dum @ts-expect-error
-      notice.setMessage(APP_TITLE + `\n${pagesCount} pages were processed.`)
+      notice.setMessage(APP_TITLE + t("N_ALL_DONE", { count: pagesCount }))
 
       setTimeout(() => {
         notice.hide()
@@ -447,7 +448,7 @@ export default class LocalImagesPlugin extends Plugin {
             for (const reg_p of MD_SEARCH_PATTERN) {
               if (reg_p.test(cont)) {
                 logError("content: " + cont)
-                showBalloon("Media links were found, processing...", this.settings.showNotifications)
+                showBalloon(t("N_LINKS_FOUND"), this.settings.showNotifications)
 
                 this.enqueueActivePage(activeFile)
                 this.setupQueueInterval()
@@ -464,7 +465,7 @@ export default class LocalImagesPlugin extends Plugin {
 
 
     } catch (e) {
-      showBalloon(`Please select a note or click inside selected note in canvas.`, this.settings.showNotifications)
+      showBalloon(t("N_SELECT_NOTE"), this.settings.showNotifications)
       return
     }
 
@@ -487,14 +488,14 @@ export default class LocalImagesPlugin extends Plugin {
         if (this.settings.saveAttE != "nextToNoteS" ||
           !path.basename(oldRootdir).endsWith("${notename}") ||
           oldRootdir.includes("${date}")) {
-          showBalloon("This command requires the settings 'Next to note in the folder specified below' and pattern '${notename}' at the end to be enabled, also the path cannot contain ${date} pattern.\nPlease, change settings first!\r\n", this.settings.showNotifications)
+          showBalloon(t("N_NEED_SETTINGS"), this.settings.showNotifications)
           return
         }
          
         if (!noteFile) {
           noteFile = this.getCurrentNote()
           if (!noteFile) {
-            showBalloon("Please, select a note or click inside a note in canvas!", this.settings.showNotifications)
+            showBalloon(t("N_SELECT_NOTE2"), this.settings.showNotifications)
             return
           }
 
@@ -506,7 +507,7 @@ export default class LocalImagesPlugin extends Plugin {
           oldRootdir = oldRootdir.replace("${notename}", path.parse(noteFile.path)?.name)
           oldRootdir = trimAny(pathJoin([path.parse(noteFile.path)?.dir, oldRootdir]), ["\/"])
           if (! await this.app.vault.exists(oldRootdir)) {
-            showBalloon("The attachment folder " + oldRootdir + " does not exist!", this.settings.showNotifications)
+            showBalloon(t("N_FOLDER_MISSING", { dir: oldRootdir }), this.settings.showNotifications)
             return
           }
           const allAttachments = await this.app.vault.getAbstractFileByPath(oldRootdir)?.children
@@ -544,12 +545,12 @@ export default class LocalImagesPlugin extends Plugin {
 
           if (orphanedAttachments.length > 0) {
             const mod = new ModalW1(this.app)
-            mod.messg = "Confirm remove " + orphanedAttachments.length + " orphan(s) from '" + oldRootdir + "'\r\n\r\n      "
+            mod.messg = t("N_CONFIRM_ORPHANS", { count: orphanedAttachments.length, dir: oldRootdir })
             mod.plugin = this
             mod.callbackFunc = this.removeOrphans("execremove", orphanedAttachments)
             mod.open()
           } else {
-            showBalloon("No orphaned files found!", this.settings.showNotifications)
+            showBalloon(t("N_NO_ORPHANS"), this.settings.showNotifications)
           }
 
         }
@@ -562,7 +563,7 @@ export default class LocalImagesPlugin extends Plugin {
       if (type == "obsidian") {
 
         if (obsmediadir.slice(0, 2) == "./" || obsmediadir == "/") {
-          showBalloon("This command cannot run on vault's root or on subfolder next to note!\nPlease, change settings first!\r\n", this.settings.showNotifications)
+          showBalloon(t("N_ROOT_FORBIDDEN"), this.settings.showNotifications)
           return
         }
 
@@ -666,13 +667,12 @@ export default class LocalImagesPlugin extends Plugin {
         logError(orphanedAttachments, true)
         if (orphanedAttachments.length > 0) {
           const mod = new ModalW1(this.app)
-          mod.messg = "Confirm remove " + orphanedAttachments.length + " orphan(s) from '" + obsmediadir + "  '\r\n \
-          NOTE: Be careful when running this command on Obsidian attachments folder, since some html-linked files may also be moved.\r\n      "
+          mod.messg = t("N_CONFIRM_ORPHANS_OBS", { count: orphanedAttachments.length, dir: obsmediadir })
           mod.plugin = this
           mod.callbackFunc = this.removeOrphans("execremove", orphanedAttachments)
           mod.open()
         } else {
-          showBalloon("No orphaned files found!", this.settings.showNotifications)
+          showBalloon(t("N_NO_ORPHANS"), this.settings.showNotifications)
         }
 
 
@@ -691,13 +691,13 @@ export default class LocalImagesPlugin extends Plugin {
           filesToRemove.forEach((el: TFile) => {
 
             if (remcompl) {
-              msg = "were deleted completely."
+              msg = "N_REMOVED_COMPLETELY"
               this.app.vault.delete(el, true)
             } else {
               if (useSysTrash) {
-                msg = "were moved to the system garbage can."
+                msg = "N_REMOVED_SYS_TRASH"
               } else {
-                msg = "were moved to the Obsidian garbage can."
+                msg = "N_REMOVED_OBS_TRASH"
               }
               this.app.vault.trash(el, useSysTrash)
             }
@@ -705,7 +705,7 @@ export default class LocalImagesPlugin extends Plugin {
           })
         }
 
-        showBalloon(filesToRemove.length + " file(s) " + msg, this.settings.showNotifications)
+        showBalloon(t(msg, { count: filesToRemove.length }), this.settings.showNotifications)
 
       }
 
@@ -716,7 +716,7 @@ export default class LocalImagesPlugin extends Plugin {
 
   private openProcessAllModal = () => {
     const mod = new ModalW1(this.app)
-    mod.messg = "Confirm processing all pages.\r\n "
+    mod.messg = t("N_CONFIRM_ALL")
     mod.plugin = this
     mod.callbackFunc = this.processAllPages
     mod.open()
@@ -851,7 +851,7 @@ export default class LocalImagesPlugin extends Plugin {
         if (obsmdir != "" && ! await this.app.vault.adapter.exists(obsmdir)) {
          if ( ! this.settings.DoNotCreateObsFolder){
           this.ensureFolderExists(obsmdir)
-          showBalloon("You obsidian media folder set to '" + obsmdir + "', and has been created by the plugin. Please, try again. ", this.settings.showNotifications)
+          showBalloon(t("N_OBS_FOLDER_CREATED", { dir: obsmdir }), this.settings.showNotifications)
           onRet()
         }
           return
@@ -1018,7 +1018,7 @@ export default class LocalImagesPlugin extends Plugin {
         }
         if (itemcount > 0) {
           await this.app.vault.modify(note, filedata)
-          showBalloon(itemcount + " attachments for note " + note.path + " were processed.", this.settings.showNotifications)
+          showBalloon(t("N_NOTE_ATT_PROCESSED", { count: itemcount, path: note.path }), this.settings.showNotifications)
           itemcount = 0
         }
       }
@@ -1052,13 +1052,13 @@ export default class LocalImagesPlugin extends Plugin {
           }
           await this.app.vault.rename(noteFile, fullPath)
 
-          showBalloon(`The note was renamed to ` + fullPath, this.settings.showNotifications)
+          showBalloon(t("N_RENAMED", { path: fullPath }), this.settings.showNotifications)
 
         }
       }
 
     } catch (e) {
-      showBalloon(`Cannot rename.`, this.settings.showNotifications)
+      showBalloon(t("N_RENAME_FAIL"), this.settings.showNotifications)
       return
     }
   }

@@ -136,3 +136,25 @@ Share your  wishes and ideas about this software or buy me a coffee (or hot choc
 npm run build
 npm run dev
 ```
+
+
+---
+
+# 自用版说明（weifile/obsidian-local-images-plus）
+
+从 Sergei-Korneev/obsidian-local-images-plus 0.16.4 分出，自用，不同步上游。
+
+## 改动
+- 功能区按钮名改为「Local Images Plus」（原来带版本号和一长串说明，右键功能区菜单里太长）。
+- 加了中文界面：`src/lang.ts` 里一张英文表、一张中文表，Obsidian 界面语言是中文时自动用中文（设置页、命令名、通知、确认框）。加新文字时两张表都要加同名键。控制台日志保持英文。
+
+## 从源码安装 / 恢复
+```bash
+git clone https://github.com/weifile/obsidian-local-images-plus.git
+cd obsidian-local-images-plus
+npm ci
+npm run build
+```
+产物在 `obsidian_local_images_plus_latest/`（`main.js`、`manifest.json`、`styles.css`），复制到库的 `.obsidian/plugins/obsidian-local-images-plus/`，Obsidian 按 Ctrl+R 重载。
+
+不要在社区插件里点这个插件的「更新」，会被商店版本覆盖。
